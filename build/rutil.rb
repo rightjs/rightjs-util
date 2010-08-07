@@ -85,7 +85,8 @@ class RUtil
   #
   # Compiles the source code
   #
-  def compile(remote=false)
+  def compile(remote=nil)
+    remote = ENV['REMOTE'] == 'true' if remote.nil?
     remote ? compile_remotely : compile_locally
     
     # creating the gziped version of the script
