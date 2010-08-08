@@ -34,15 +34,6 @@ function include_css(filename) {
 };
 
 /**
- * Includes a suitable RightJS build on the page
- *
- * @return void
- */
-function include_right_js() {
-  include_js('util/lib/right' + (in_safe_mode ? '-safe' : ''));
-};
-
-/**
  * Initializes the core test-page
  *
  * @return void
@@ -80,6 +71,7 @@ function initialize_core_test_page() {
  */
 function initialize_test_page() {
   include_js('util/test/testcase');
+  include_js('util/lib/right' + (in_safe_mode ? '-safe' : ''));
   include_css('util/test/test-page');
   
   var no_safe_location  = current_location.replace(/(\?|&)safe=[^?&]+/,  '');
