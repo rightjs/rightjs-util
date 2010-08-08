@@ -6,6 +6,8 @@
  *
  * Copyright (C) 2010 Nikolay Nemshilov
  */
+load('util/test/jslint.js');
+
 function rightly_check(filename, okays) {
   JSLINT(readFile(filename), { evil: true, forin: true });
   
@@ -26,7 +28,5 @@ function rightly_check(filename, okays) {
 
   if (problems > 0 ) {
     print( "\n" + problems + " Error(s) found." );
-  } else {
-    print( " * JSLint check passed." );
   }
 };

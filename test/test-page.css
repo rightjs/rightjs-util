@@ -16,6 +16,7 @@ body {
   border-top: none;
   border-bottom: none;
   padding: 0 30pt;
+  _padding-right: 0;
 }
 
 h1, h2, h3, h4 {
@@ -38,6 +39,7 @@ h1#header {
   color: white;
   font-size: 2.4em;
   padding: .6em 30pt;
+  _width: auto;
   border-bottom: 4pt solid #999;
 }
 h1#header a {
@@ -51,6 +53,29 @@ h1#header a {
 h1#header a.safe {
   bottom: auto;
   top: 1em;
+}
+
+h1#header ul#modes {
+  position: absolute;
+  font-size: 10pt;
+  right: 3.5em;
+  top: 1em;
+  margin: 0;
+  padding: 0;
+}
+
+h1#header ul#modes a {
+  position: static;
+  bottom: none;
+  right: none;
+}
+h1#header ul#modes li,
+h1#header ul#modes li a {
+  color: #888;
+}
+h1#header ul#modes li.current,
+h1#header ul#modes li.current a {
+  color: white;
 }
 
 a {
@@ -107,6 +132,7 @@ div#testcase-inline-report-block {
   border: none;
   width: auto;
   margin-top: -2em;
+  _margin-right: 30pt;
 }
 
 div#testcase-inline-report-block div.title {
