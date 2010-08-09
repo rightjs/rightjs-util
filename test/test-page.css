@@ -44,14 +44,13 @@ h1#header {
 }
 h1#header a {
   position: absolute;
-  bottom: 1em;
+  top: 3.5em;
   right: 3.5em;
   font-size: 10pt;
   color: white;
   outline: none;
 }
 h1#header a.safe {
-  bottom: auto;
   top: 1em;
 }
 
