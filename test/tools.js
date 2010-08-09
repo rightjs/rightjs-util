@@ -99,7 +99,7 @@ function initialize_test_page() {
  * ....
  * @return void
  */
-var module_name = null;
+var modules_queue = [];
 function load_modules() {
   if (testing_builds) {
     for (var i=0; i < arguments.length; i++) {
@@ -107,8 +107,8 @@ function load_modules() {
     }
   } else {
     for (var i=0; i < arguments.length; i++) {
-      module_name = arguments[i];
-      include_js('src/'+ module_name + '/__init__');
+      modules_queue.push(arguments[i]);
+      include_js('src/'+ arguments[i] + '/__init__');
     }
   }
 };
@@ -121,8 +121,10 @@ function load_modules() {
  * @return void
  */
 function include_module_files() {
+  var module = modules_queue.shift();
+  
   for (var i=0; i < arguments.length; i++) {
-    include_js('src/'+ module_name + '/' + arguments[i]);
+    include_js('src/'+ module + '/' + arguments[i]);
   }
 };
 
