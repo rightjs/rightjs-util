@@ -139,7 +139,7 @@ var modules_queue = [];
 function load_modules() {
   if (testing_builds) {
     for (var i=0; i < arguments.length; i++) {
-      include_js('build/right-'+ arguments[i]);
+      include_js('build/right-'+ arguments[i].replace(/_/g, '-'));
     }
   } else {
     for (var i=0; i < arguments.length; i++) {
