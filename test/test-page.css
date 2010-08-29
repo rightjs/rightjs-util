@@ -65,8 +65,8 @@ h1#header ul#modes {
 
 h1#header ul#modes a {
   position: static;
-  bottom: none;
-  right: none;
+  bottom: auto;
+  right: auto;
 }
 h1#header ul#modes li,
 h1#header ul#modes li a {
