@@ -11,7 +11,7 @@ var in_safe_mode   = current_location.toString().match(/(\?|&)safe/);
 var testing_builds = current_location.toString().match(/(\?|&)build/);
 
 var javascripts = document.getElementsByTagName('script');
-var root_path   = javascripts[javascripts.length - 1].getAttribute('src').split('util/test/tools')[0];
+var root_path   = root_path || javascripts[javascripts.length - 1].getAttribute('src').split('util/test/tools')[0];
 
 /**
  * Includes the filename on the page
@@ -42,7 +42,7 @@ function include_css(filename) {
  */
 function include_right_js() {
   include_js('util/lib/right' + (in_safe_mode ? '-safe' : ''));
-  
+
   for (var i=0; i < arguments.length; i++) {
     include_js('util/lib/right-'+ arguments[i]);
   }
@@ -56,25 +56,27 @@ function include_right_js() {
  */
 function build_test_page(links) {
   include_css('util/test/test-page');
-  
+
   if (!links) {
-    var no_safe_location  = current_location.replace(/(\?|&)safe=[^?&]+/,  '');
-    var no_build_location = current_location.replace(/(\?|&)build=[^?&]+/, '');
+    var no_safe_location  = current_location.replace(/(\?|&)safe=[^?&]+/,  '').replace('.html&', '.html?');
+    var no_build_location = current_location.replace(/(\?|&)build=[^?&]+/, '').replace('.html&', '.html?');
 
     links = '' +
-      '<a href="'+ (no_safe_location + (in_safe_mode ? '' : 
+      '<a href="'+ (no_safe_location + (in_safe_mode ? '' :
         (no_safe_location.indexOf('?') < 0 ? '?' : '&') + 'safe=1')
       )+ '" class="safe">'+ (in_safe_mode ? 'Normal Mode' : 'Safe Mode') + '</a>' +
-      '<a href="'+ (no_build_location + (testing_builds ? '' : 
+      '<a href="'+ (no_build_location + (testing_builds ? '' :
         (no_build_location.indexOf('?') < 0 ? '?' : '&') + 'build=1')
       )+ '" class="build">'+ (testing_builds ? 'Test Source' : 'Test Builds') + '</a>'
     ;
   }
-  
-  if (in_safe_mode)   document.title += ' / Safe Mode';
-  if (testing_builds) document.title += ' / Builds';
-  
-  document.write('<h1 id="header">'+ document.title + links +'</h1>');
+
+  var doc_title = document_title || document.title;
+
+  if (in_safe_mode)   doc_title += ' / Safe Mode';
+  if (testing_builds) doc_title += ' / Builds';
+
+  document.write('<h1 id="header">'+ doc_title + links +'</h1>');
 };
 
 /**
@@ -84,8 +86,8 @@ function build_test_page(links) {
  */
 function initialize_core_test_page() {
   include_js('util/test/testcase');
-  
-  
+
+
   if (in_safe_mode) {
     include_js("build/right-safe-src");
   } else if (testing_builds) {
@@ -93,9 +95,9 @@ function initialize_core_test_page() {
   } else {
     include_js("src/__init__");
   }
-  
+
   var clean_link = current_location.replace(/\?.*?$/, '');
-  
+
   build_test_page('<ul id="modes">' +
     '<li'+(!in_safe_mode && !testing_builds ? ' class="current"':'')+'><a href="'+ clean_link + '">Source Mode</a></li>' +
     '<li'+(testing_builds ? ' class="current"':'')+'><a href="'+ clean_link + '?build=1">Build Mode</a></li>' +
@@ -111,20 +113,7 @@ function initialize_core_test_page() {
 function initialize_test_page() {
   include_js('util/test/testcase');
   include_right_js();
-  
-  build_test_page();
-};
 
-/**
- * Initializes an UI module test-page
- *
- * @param String module name
- * .....
- * @return void
- */
-function initialize_ui_test_page() {
-  include_right_js.apply(this, arguments);
-  include_shared_js('widget');
   build_test_page();
 };
 
@@ -150,25 +139,6 @@ function load_modules() {
 };
 
 /**
- * Loads up the ui-modules
- * basically the same as `load_modules` but also
- * hooks up the module css files
- *
- * @param String module name
- * .......
- * @return void
- */
-function load_ui_modules() {
-  load_modules.apply(this, arguments);
-  
-  if (!testing_builds) {
-    for (var i=0; i < arguments.length; i++) {
-      include_css('src/'+ arguments[i] + '/' + arguments[i]);
-    }
-  }
-};
-
-/**
  * Hooks up the currently loading module file
  *
  * @param String file name
@@ -177,7 +147,7 @@ function load_ui_modules() {
  */
 function include_module_files() {
   var module = modules_queue.shift();
-  
+
   for (var i=0; i < arguments.length; i++) {
     include_js('src/'+ module + '/' + arguments[i]);
   }
@@ -243,15 +213,21 @@ function include_shared_css() {
  */
 function run_tests(tests) {
   var names = [];
-  
+
   for (var name in tests) {
     names.push(name);
     include_js('test/'+ tests[name] + '_test');
   }
-  
+
   window.onload = function() {
     setTimeout(function() {
       eval('new TestSuite('+names.join(',')+').run()');
     }, 50);
   };
 };
+
+// hooking up the UI module
+if (self.initialize_ui_test_page && self.current_module) {
+  initialize_ui_test_page();
+  load_ui_modules(current_module);
+}
