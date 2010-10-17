@@ -11,7 +11,7 @@ var in_safe_mode   = current_location.toString().match(/(\?|&)safe/);
 var testing_builds = current_location.toString().match(/(\?|&)build/);
 
 var javascripts = document.getElementsByTagName('script');
-var root_path   = root_path || javascripts[javascripts.length - 1].getAttribute('src').split('util/test/tools')[0];
+var root_path   = self.root_path || javascripts[javascripts.length - 1].getAttribute('src').split('util/test/tools')[0];
 
 /**
  * Includes the filename on the page
@@ -71,7 +71,7 @@ function build_test_page(links) {
     ;
   }
 
-  var doc_title = document_title || document.title;
+  var doc_title = self.document_title || document.title;
 
   if (in_safe_mode)   doc_title += ' / Safe Mode';
   if (testing_builds) doc_title += ' / Builds';
